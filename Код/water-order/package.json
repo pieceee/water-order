@@ -1,0 +1,20 @@
+{
+  "name": "water-order",
+  "version": "1.0.0",
+  "description": "TP",
+  "author": "aaksn",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0",
+    "vue-yandex-maps": "^0.10.7"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0"
+  }
+}
