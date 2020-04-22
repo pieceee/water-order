@@ -4,7 +4,9 @@
             <v-card-title>
                 Корзина
             </v-card-title>
-            <v-card-text></v-card-text>
+            <v-card-text>
+                <cart />
+            </v-card-text>
         </v-card>
         <v-card flat>
             <v-card-title>
@@ -12,7 +14,6 @@
             </v-card-title>
             <v-card-text>
                 <v-form>
-                    <v-text-field></v-text-field>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -20,8 +21,13 @@
 </template>
 
 <script>
+import Cart from "~/components/Cart.vue"
+
 export default {
     layout: 'empty',
+    components: {
+      Cart
+    },
     data: () => ({
 
     }),
