@@ -12,21 +12,20 @@
             <v-card-title>
                 Данные
             </v-card-title>
-            <v-card-text>
-                <v-form>
-                </v-form>
-            </v-card-text>
+            <order-brief :brief="{}" :firstorder="true" />
         </v-card>
     </v-container>    
 </template>
 
 <script>
 import Cart from "~/components/Cart.vue"
+import OrderBrief from "~/components/OrderBrief.vue"
 
 export default {
     layout: 'empty',
     components: {
-      Cart
+      Cart,
+        OrderBrief
     },
     data: () => ({
 

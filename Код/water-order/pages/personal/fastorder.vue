@@ -25,9 +25,7 @@
       </v-tab-item>
     </v-tabs-items>
 
-    <v-btn to="/" nuxt text color="primary" style="position: absolute; bottom: 24px; left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%);">Заказать</v-btn>
+    <order-brief :brief="{}" :firstorder="false" />    
 
   </v-container>
 </template>
@@ -93,9 +91,14 @@
     },
   ]
 
+  import OrderBrief from "~/components/OrderBrief.vue"
+
   export default {
     head: {
       title: 'Мои заказы'
+    },
+    components: {
+      OrderBrief
     },
     layout: 'personal',
     data: () => ({

@@ -62,9 +62,6 @@ export default {
       clientdata: null,
       orders: null
     }),
-    watch: {
-      
-    },
     created() {
         this.clientdata = m
         this.orders = mockup

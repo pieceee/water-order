@@ -12,6 +12,7 @@
         <orders :orders="pastorders" />
       </v-tab-item>
     </v-tabs-items>
+
     <v-btn to="/personal/fastorder" nuxt text color="primary" style="position: absolute; bottom: 24px; left: 50%;
         margin-right: -50%;
         transform: translate(-50%);">Быстрый заказ</v-btn>
