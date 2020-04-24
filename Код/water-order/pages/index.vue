@@ -13,11 +13,15 @@
     <v-card flat>
       <v-card-title>Почему мы?</v-card-title>
       <v-card-text>
-        Классный текст, который скоро здесь будет.
-        У нас там это, водичка, вот
+        Компания «VitaWater» разработала и выпустила воду, обогащенную витаминами.
+        Вода«Watermin» - это четыре ярких вкуса, обогащенных витаминами. В составе каждой бутылки содержится от 20 до
+        100% от рекомендованной суточной нормы витаминов группы B, C, D, E, а также калий, магний, йод, цинк. При
+        разработке линейки воды «Watermin» учитывались все потребности организма человека на протяжении дня - это
+        умственные нагрузки, физические, поддержание жизненного тонуса, хорошего самочувствия и быстрого восстановления
+        сил.
       </v-card-text>
     </v-card>
-    <div style="z-index: 500; position: sticky; bottom: 24px; display: table;
+    <div  v-if="$store.state.cart.sum" style="z-index: 500; position: sticky; bottom: 24px; display: table;
   margin: 0 auto; background: #fff; ">
       <v-btn outlined tile color="primary" @click="sheet = !sheet">Корзина</v-btn>
       <v-btn to="/map" nuxt outlined tile color="primary">Оформить</v-btn>
@@ -27,7 +31,7 @@
         <v-btn block text @click="sheet = !sheet">
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
-        <v-card flat width="80%"  style="display: table; margin: 0 auto;">
+        <v-card flat width="80%" style="display: table; margin: 0 auto;">
           <cart />
         </v-card>
       </v-sheet>
@@ -42,27 +46,27 @@
 <script>
   const mockup = [{
       id: 1,
-      src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-      price: 169,
-      description: "First"
+      src: '/1.png',
+      price: 169.00,
+      description: "Vitamin Defence Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «ЗАЩИТА»)"
     },
     {
       id: 2,
-      src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-      price: 178,
-      description: "Second"
+      src: '/1.png',
+      price: 178.00,
+      description: "Vitamin Every Day Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «КАЖДЫЙ ДЕНЬ»)"
     },
     {
       id: 3,
-      src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+      src: '/1.png',
       price: 187,
-      description: "Third"
+      description: "Vitamin Power Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «СИЛА»)"
     },
     {
       id: 4,
-      src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+      src: '/1.png',
       price: 196,
-      description: "444"
+      description: "Vitamin Detox Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «ДЕТОКС»)"
     },
   ]
 
@@ -75,7 +79,7 @@
     },
     data() {
       return {
-        sheet: false,        
+        sheet: false,
         items: mockup,
         show: 0,
         showitems: {}

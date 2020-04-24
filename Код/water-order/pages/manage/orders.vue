@@ -3,9 +3,9 @@
 
     <orders-list :orders="mockup" />
 
-    <v-btn to="/" nuxt text color="primary" style="position: absolute; bottom: 0px; left: 50%;
+    <v-btn text color="primary" style="position: absolute; bottom: 24px; left: 50%;
         margin-right: -50%;
-        transform: translate(-50%);">Заказать</v-btn>
+        transform: translate(-50%);">Выгрузить</v-btn>
 
   </v-container>
 </template>
