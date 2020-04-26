@@ -87,6 +87,7 @@
     },
     methods: {
       addelement() {
+        yaCounter62256409.reachGoal('ADD_TO_CART')
         const element = {
           ...this.items[this.show]
         }

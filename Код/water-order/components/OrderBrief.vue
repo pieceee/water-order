@@ -16,7 +16,7 @@
       </v-row>
       </template>
       <p>Сособ оплаты: <br>Наличными при получении</p>
-      <v-btn text block>Заказать</v-btn>
+      <v-btn text block @click="order">Заказать</v-btn>
     </v-form>
   </v-container>
 </template>
@@ -29,7 +29,12 @@
       comment: '',
     }),
     methods: {
-      sendcode: () => {}
+      sendcode: () => {
+        yaCounter62256409.reachGoal('AUTH_PHONE')
+      },
+      order: () => {
+        yaCounter62256409.reachGoal('ORDER_SUCCES')
+      }
     },
     created() {}
   }

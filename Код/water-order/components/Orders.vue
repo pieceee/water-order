@@ -5,7 +5,7 @@
       <div v-for="(order, i) in orders" :key="i">
         <v-list-group flat>
           <template v-slot:activator>
-            <v-list-item three-line>
+            <v-list-item three-line @click="yaCounter62256409.reachGoal('SELECT_ODER')">
               <v-list-item-content>
                 <v-list-item-title class="display-1">{{order.cart.sum}}Р</v-list-item-title>
                 <v-list-item-title class="subtitle-1">{{order.place}}</v-list-item-title>
@@ -15,7 +15,7 @@
           </template>
           <v-list-item>
             <v-list-item-content class="d-inline">
-              <v-btn text>Action 1</v-btn>
+              <v-btn @click="yaCounter62256409.reachGoal('CANCEL_ORDER')" text>Action 1</v-btn>
               <v-btn text>Action 2</v-btn>
 
               <v-chip-group max="0">

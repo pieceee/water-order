@@ -41,6 +41,17 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    [
+      '@nuxtjs/yandex-metrika',
+      {
+        id: '62256409',
+        webvisor: false,
+        // clickmap:true,
+        // useCDN:false,
+        // trackLinks:true,
+        // accurateTrackBounce:true,
+      }
+    ],
   ],
   /*
   ** vuetify module configuration

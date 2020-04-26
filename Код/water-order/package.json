@@ -11,6 +11,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/yandex-metrika": "^1.0.3",
     "nuxt": "^2.0.0",
     "vue-yandex-maps": "^0.10.7"
   },

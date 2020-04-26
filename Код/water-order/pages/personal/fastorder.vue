@@ -103,13 +103,16 @@
     layout: 'personal',
     data: () => ({
       tab: 0,
-      selected: 0,
+      selected: -1,
       places: [],
       placesorders: [],
     }),
     watch: {
       tab: function (n) {
-        this.selected = 0
+        this.selected = -1
+      },
+      selected: function(){
+        yaCounter62256409.reachGoal('SELECTCART')
       }
     },
     created: function () {

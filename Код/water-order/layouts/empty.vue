@@ -32,7 +32,7 @@
       <nuxt />
     </v-content>
     <v-snackbar v-model="snackbar" top>
-      <v-btn to="/personal/fastorder" nuxt text >
+      <v-btn @click="yaCounter62256409.reachGoal('SIGNIN')" to="/personal/fastorder" nuxt text >
         Клиент
       </v-btn>
       <v-btn to="/manage/orders" nuxt text >
