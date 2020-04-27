@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/622113b2-bdc0-4c71-b90d-b2e6dab7b35c/resourceGroups/water-project/providers/Microsoft.Web/sites/water-project",
+    "appService.deploySubpath": ""
+}
