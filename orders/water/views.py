@@ -46,7 +46,8 @@ class AuthSmsView(APIView):
 
     def post(self, request):
         if not request.data:
-            return Response({"Error": "Please provide username/password"}, status="400")
+            return Response({"Error": "Please provide username/password"},
+                            status="400")
         phone = request.data.get("username")
         profile = Profile.objects.get(phone=phone)
         users_code = str(request.data.get("code"))
@@ -70,9 +71,8 @@ class OrderView(APIView):
         orders_list = request.data.get("orders_list")
         serializer = OrdersListSerializer(data=orders_list)
         print("serializer: ", serializer)
-        orders = Order.objects.filter(
-            status=serializer.status, user_id=serializer.client_id
-        )
+        orders = Order.objects.filter(status=serializer.status,
+                                      user_id=serializer.client_id)
         serializer2 = OrderSerializer(orders, many=True)
         print("serializer2: ", serializer2)
         return Response({"orders": serializer2.data})
@@ -83,7 +83,9 @@ class OrderView(APIView):
         if not saved_order:
             return Response({"order not exist"})
         data = request.data.get("order")
-        serializer = OrderSerializer(instance=saved_order, data=data, partial=True)
+        serializer = OrderSerializer(instance=saved_order,
+                                     data=data,
+                                     partial=True)
         print("serializer : ", serializer)
         if serializer.is_valid():
             saved_order2 = serializer.save()
@@ -137,10 +139,8 @@ class ClientView(APIView):
         client.profile.phone = new_phone
         client.profile.name = new_name
         client.profile.save()
-        return Response(
-            {
-                "access_token": token,
-                "phone": client.profile.phone,
-                "name": client.profile.name,
-            }
-        )
+        return Response({
+            "access_token": token,
+            "phone": client.profile.phone,
+            "name": client.profile.name,
+        })
