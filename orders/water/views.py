@@ -6,9 +6,16 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Order, Product, ProductOrder, Profile, User
-from .serializers import (AdressSerializer, CartSerializer, OrderSerializer,
-                          OrdersListSerializer, ProductSerializer)
+from .models import Order
+from .models import Product
+from .models import ProductOrder
+from .models import Profile
+from .models import User
+from .serializers import AdressSerializer
+from .serializers import CartSerializer
+from .serializers import OrderSerializer
+from .serializers import OrdersListSerializer
+from .serializers import ProductSerializer
 from .smsc_api import *
 
 

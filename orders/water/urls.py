@@ -1,7 +1,10 @@
 from django.urls import path
 
-from .views import (AuthSmsView, ClientView, NewOrderView, OrderView,
-                    ProductView)
+from .views import AuthSmsView
+from .views import ClientView
+from .views import NewOrderView
+from .views import OrderView
+from .views import ProductView
 
 app_name = "water"
 
