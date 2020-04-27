@@ -8,6 +8,7 @@ from random import randint
 import jwt
 from .smsc_api import *
 
+
 class AuthSmsView(APIView):
     def get(self, request):
         phone = request.data.get('tel')
@@ -16,7 +17,7 @@ class AuthSmsView(APIView):
         if profile:
             code = randint(1000, 9999)
             smsc = SMSC()
-            number = ''#"'79205575179' # get number from request
+            number = ''  # "'79205575179' # get number from request
             message = "Код подтверждения {}".format(code)
             if float(smsc.get_sms_cost(number, message)[0]) > 3:
                 print('high cost sms to number {}'.format(number))
@@ -62,7 +63,8 @@ class OrderView(APIView):
         orders_list = request.data.get('orders_list')
         serializer = OrdersListSerializer(data=orders_list)
         print('serializer: ', serializer)
-        orders = Order.objects.filter(status=serializer.status, user_id=serializer.client_id)
+        orders = Order.objects.filter(
+            status=serializer.status, user_id=serializer.client_id)
         serializer2 = OrderSerializer(orders, many=True)
         print('serializer2: ', serializer2)
         return Response({"orders": serializer2.data})
@@ -73,7 +75,8 @@ class OrderView(APIView):
         if not saved_order:
             return Response({"order not exist"})
         data = request.data.get('order')
-        serializer = OrderSerializer(instance=saved_order, data=data, partial=True)
+        serializer = OrderSerializer(
+            instance=saved_order, data=data, partial=True)
         print("serializer : ", serializer)
         if serializer.is_valid():
             saved_order2 = serializer.save()
@@ -90,7 +93,7 @@ class NewOrderView(APIView):
         addres_serializer = AdressSerializer(data=adress)
 
         order = Order()
-        order.user = User.objects.get(id=1) # get by access token
+        order.user = User.objects.get(id=1)  # get by access token
         order.status = 'registered'
         order.date = datetime.now()
         order.place = addres_serializer.coords

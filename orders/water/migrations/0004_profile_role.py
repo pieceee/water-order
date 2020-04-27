@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='role',
-            field=models.CharField(choices=[('customer', 'customer'), ('manager', 'manager')], default='customer', max_length=20),
+            field=models.CharField(choices=[(
+                'customer', 'customer'), ('manager', 'manager')], default='customer', max_length=20),
         ),
     ]
