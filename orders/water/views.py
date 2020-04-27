@@ -5,24 +5,50 @@ from .serializers import ProductSerializer, OrdersListSerializer, OrderSerialize
 from datetime import datetime
 from rest_framework.generics import get_object_or_404
 from random import randint
+import jwt
+from .smsc_api import *
 
-class AuthSmsView (APIView):
+class AuthSmsView(APIView):
     def get(self, request):
         phone = request.data.get('tel')
+        print(request.data)
         profile = Profile.objects.get(phone=phone)
         if profile:
             code = randint(1000, 9999)
-            # send sms
-            request.session['code'] = str(code)
-            return Response("sms sent")
+            smsc = SMSC()
+            number = ''#"'79205575179' # get number from request
+            message = "Код подтверждения {}".format(code)
+            if float(smsc.get_sms_cost(number, message)[0]) > 3:
+                print('high cost sms to number {}'.format(number))
+            else:
+                print('sms will send')
+                result = smsc.send_sms(number, message)
+                if len(result) == 4:
+                    id_message, count, cost, balance = result
+                    print('sms-code: ', code)
+                    request.session['code'] = str(code)
+                    return Response("sms sent")
+                else:
+                    id_message, error = result
+                    print('error code {}'.format(error))
+        Response('error')
 
     def post(self, request):
+        if not request.data:
+            return Response({'Error': "Please provide username/password"}, status="400")
         phone = request.data.get('username')
+        profile = Profile.objects.get(phone=phone)
         users_code = str(request.data.get('code'))
         my_code = request.session.get('code', None)
         if users_code == my_code:
-            # create access token
-            pass
+            payload = {
+                'phone': phone,
+                'name': profile.name
+            }
+            jwt_token = {'token': jwt.encode(payload, "SECRET_KEY")}
+            return Response({"token": jwt_token, 'userrole': profile.role})
+        return Response({'Error': "invalid password"}, status="400")
+
 
 class ProductView(APIView):
     def get(self, request):

@@ -42,9 +42,14 @@ class ProductOrder(models.Model):
 
 
 class Profile(models.Model):
+    ROLE_CHOICES = (
+        ('customer', 'customer'),
+        ('manager', 'manager'),
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=12)
     name = models.CharField(max_length=50)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
