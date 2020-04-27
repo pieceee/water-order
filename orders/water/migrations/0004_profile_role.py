@@ -6,14 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('water', '0003_profile'),
+        ("water", "0003_profile"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='role',
-            field=models.CharField(choices=[(
-                'customer', 'customer'), ('manager', 'manager')], default='customer', max_length=20),
+            model_name="profile",
+            name="role",
+            field=models.CharField(
+                choices=[("customer", "customer"), ("manager", "manager")],
+                default="customer",
+                max_length=20,
+            ),
         ),
     ]

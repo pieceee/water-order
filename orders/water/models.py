@@ -10,7 +10,7 @@ class Product(models.Model):
     description = models.TextField()
     volume = models.FloatField()
     price = models.FloatField()
-    photo = models.ImageField(upload_to='photos')
+    photo = models.ImageField(upload_to="photos")
 
     def __str__(self):
         return self.name
@@ -18,17 +18,15 @@ class Product(models.Model):
 
 class Order(models.Model):
     STATUS_CHOICES = (
-        ('registered', 'registered'),
-        ('confirmed', 'confirmed'),
-        ('sent for delivery', 'sent for delivery'),
-        ('delivered', 'delivered')
+        ("registered", "registered"),
+        ("confirmed", "confirmed"),
+        ("sent for delivery", "sent for delivery"),
+        ("delivered", "delivered"),
     )
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     place = models.CharField(max_length=100)
     date = models.DateTimeField()
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default='')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="")
 
     def __str__(self):
         return self.user.first_name + str(self.date)
@@ -36,9 +34,9 @@ class Order(models.Model):
 
 class ProductOrder(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='orders')
-    order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name='products')
+        Product, on_delete=models.CASCADE, related_name="orders"
+    )
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="products")
     count = models.IntegerField()
 
     def __str__(self):
@@ -47,14 +45,13 @@ class ProductOrder(models.Model):
 
 class Profile(models.Model):
     ROLE_CHOICES = (
-        ('customer', 'customer'),
-        ('manager', 'manager'),
+        ("customer", "customer"),
+        ("manager", "manager"),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=12)
     name = models.CharField(max_length=50)
-    role = models.CharField(
-        max_length=20, choices=ROLE_CHOICES, default='customer')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="customer")
 
 
 @receiver(post_save, sender=User)
