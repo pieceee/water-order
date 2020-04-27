@@ -1,17 +1,14 @@
+from datetime import datetime
+from random import randint
+
+import jwt
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Product, Order, ProductOrder, User, Profile
-from .serializers import (
-    ProductSerializer,
-    OrdersListSerializer,
-    OrderSerializer,
-    CartSerializer,
-    AdressSerializer,
-)
-from datetime import datetime
-from rest_framework.generics import get_object_or_404
-from random import randint
-import jwt
+
+from .models import Order, Product, ProductOrder, Profile, User
+from .serializers import (AdressSerializer, CartSerializer, OrderSerializer,
+                          OrdersListSerializer, ProductSerializer)
 from .smsc_api import *
 
 

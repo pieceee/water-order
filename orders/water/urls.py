@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import ProductView, OrderView, NewOrderView, ClientView, AuthSmsView
-
+from .views import (AuthSmsView, ClientView, NewOrderView, OrderView,
+                    ProductView)
 
 app_name = "water"
 
