@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'water',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,18 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'orders.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    # Parser classes priority-wise for Swagger
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.FormParser',
+    #     'rest_framework.parsers.MultiPartParser',
+    #     'rest_framework.parsers.JSONParser',
+    # ],
+}
 
 TEMPLATES = [
     {
@@ -121,3 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+
+# also edit {load staticfiles} to {load static} in orders/lib/python3.6/site-packages/rest_framework_swagger/templates/rest_framework_swagger/index.html
