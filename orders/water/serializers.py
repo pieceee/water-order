@@ -11,14 +11,12 @@ class ProductSerializer(serializers.Serializer):
 
 
 class OrdersListSerializer(serializers.Serializer):
-    access_token = serializers.CharField()
     status = serializers.CharField()
     client_id = serializers.CharField()
 
     def __init__(self, data):
         self.status = data['status']
         self.client_id = data['client_id']
-        self.access_token = data['access_token']
 
 
 class CartSerializer(serializers.ModelSerializer):

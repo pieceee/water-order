@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'water',
     'rest_framework_swagger',
+    'water',
 ]
 
 MIDDLEWARE = [
@@ -54,17 +54,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'orders.urls'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ],
+# 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
     # Parser classes priority-wise for Swagger
     # 'DEFAULT_PARSER_CLASSES': [
     #     'rest_framework.parsers.FormParser',
     #     'rest_framework.parsers.MultiPartParser',
     #     'rest_framework.parsers.JSONParser',
     # ],
-}
+# }
 
 TEMPLATES = [
     {
@@ -136,5 +137,34 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+
+# AutoSchemaSWAGGER_SETTINGS = {
+#     'SECURITY_DEFINITIONS': {
+#         'basic': {
+#             'type': 'basic'
+#         }
+#     }
+# }
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": ['rest_logout', ],  # List URL namespaces to ignore
+    "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'delete'
+    ],
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+    'USE_SESSION_AUTH': True,
+    'JSON_EDITOR': True,
+    'REFETCH_SCHEMA_ON_LOGOUT': True
+
+}
 
 # also edit {load staticfiles} to {load static} in orders/lib/python3.6/site-packages/rest_framework_swagger/templates/rest_framework_swagger/index.html
