@@ -8,6 +8,9 @@ from random import randint
 from .smsc_api import *
 from datetime import datetime, timedelta
 import jwt
+import xlwt
+from wsgiref.util import FileWrapper
+from django.http import HttpResponse
 
 import coreapi
 from rest_framework.schemas import AutoSchema
@@ -20,7 +23,7 @@ class OrderViewSchema(AutoSchema):
                 # coreapi.Field('desc', required=True,
                 #               location="body",
                 #               type="string"),
-                coreapi.Field('request', description='json format')
+                coreapi.Field('access_token')
             ]
         manual_fields = super().get_manual_fields(path, method)
         return manual_fields + extra_fields
@@ -32,10 +35,11 @@ JWT_EXP_DELTA_MINUTES = 180
 
 class AuthSmsView(APIView):
     schema = OrderViewSchema()
-    def get(self, request):
+    def post(self, request):
         """ Отправка смс
             Пример  {'phone': '+79009317249', 'name': 'Alexander'}
             Поле name опциональное, требуется, если номер не зарегистрирован в системе"""
+        print('header', request.META)
         number = request.data.get('phone')
         name = request.data.get('name')
         print(request.data)
@@ -70,10 +74,13 @@ class AuthSmsView(APIView):
                     print('error code {}'.format(error))
                     return Response({"Error": "send message error"}, status="400")
 
+class ConfirmAuthView(APIView):
+    schema = OrderViewSchema()
     def post(self, request):
         """Возврващает токен и роль пользователя
          Пример { "phone": "+79009317249", "code": "7996"}
          """
+        #print(request.data)
         phone = request.data.get('phone')
         users_code = request.data.get('code')
         if not phone or not users_code:
@@ -92,15 +99,15 @@ class AuthSmsView(APIView):
 
 class OrderView(APIView):
     schema = OrderViewSchema()
-    def get(self, request):
+    def post(self, request):
         """ Возвращает список заказов
         Поля status и client_id могут быть пустыми
         Пример: { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkI....",
   "status": "",
   "client_id": ""
 }"""
-        acc_tok = request.data.get('access_token')
-        # jwt_token = request.headers.get('authorization', None)
+        # acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -127,8 +134,8 @@ class OrderView(APIView):
             "id": 6
 }
     """
-        acc_tok = request.data.get('access_token')
-        # jwt_token = request.headers.get('authorization', None)
+        #acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -163,8 +170,8 @@ class NewOrderView(APIView):
     """
     schema = OrderViewSchema()
     def post(self, request):
-        acc_tok = request.data.get('access_token')
-        #jwt_token = request.headers.get('authorization', None)
+        #acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -181,6 +188,7 @@ class NewOrderView(APIView):
         order.status = 'registered'
         order.date = datetime.now()
         order.place = address_serializer.coords
+        order.address = address_serializer.place
         order.save()
         #print('carts_serializer: ', carts_serializer)
         if carts_serializer.is_valid():
@@ -203,8 +211,8 @@ class ClientView(APIView):
          Пример { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1...."
 }
         """
-        acc_tok = request.data.get('access_token')
-        # jwt_token = request.headers.get('authorization', None)
+        # acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -220,6 +228,7 @@ class ClientView(APIView):
  "name": "Alexander"
 }"""
         acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
@@ -231,3 +240,43 @@ class ClientView(APIView):
         client.name = new_name
         client.save()
         return Response({"Client": {"phone": client.phone, "name": client.name}}, status=200)
+
+
+class ReportView(APIView):
+    schema = OrderViewSchema()
+    def get(self, request):
+        """
+         Возвращает файл excel..
+         Пример { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1...."
+}
+        """
+        acc_tok = request.data.get('access_token')
+        acc_tok = request.headers.get('authorization', None)
+        try:
+            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        except (jwt.DecodeError, jwt.ExpiredSignatureError):
+            return Response({'Error': 'Token is invalid'}, status=400)
+        client = Profile.objects.get(id=payload['user_id'])
+        if client.role != 'manager'  :
+            return Response({'Error': 'Customer has not acccess'}, status=400)
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Заказы')
+
+        ws.write(0, 0, "Имя заказчика")
+        ws.write(0, 1, "Телефон")
+        ws.write(0, 2, "Дата заказа")
+        ws.write(0, 3, "Место")
+        ws.write(0, 4, "Статус")
+        i = 1
+        for order in Order.objects.all():
+            ws.write(i, 0, order.user.name)
+            ws.write(i, 1, order.user.phone)
+            ws.write(i, 2, str(order.date))
+            ws.write(i, 3, order.address)
+            ws.write(i, 4, order.status)
+            i += 1
+        wb.save('order.xls')
+        f = open('order.xls', 'rb')
+        response = HttpResponse(FileWrapper(f), content_type='application/xls')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % 'orders.xls'
+        return response

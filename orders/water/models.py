@@ -35,6 +35,7 @@ class Order(models.Model):
     )
     user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='orders')
     place = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     date = models.DateTimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='')
 

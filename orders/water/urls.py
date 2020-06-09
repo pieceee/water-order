@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-from .views import OrderView, NewOrderView, ClientView, AuthSmsView
+from .views import OrderView, NewOrderView, ClientView, AuthSmsView, ConfirmAuthView, ReportView
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.documentation import include_docs_urls
 #schema_view = get_swagger_view(title='Pastebin API')
@@ -8,8 +8,6 @@ from rest_framework.documentation import include_docs_urls
 #urlpatterns = [
 #    url(r'^$', schema_view)
 #]
-
-...
 
 schema_view = get_swagger_view(title="Swagger Docs")
 
@@ -22,6 +20,8 @@ urlpatterns = [
     path('neworder/', NewOrderView.as_view()),
     path('client/', ClientView.as_view()),
     path('auth/', AuthSmsView.as_view()),
+    path('confirm/', ConfirmAuthView.as_view()),
+    path('report/', ReportView.as_view())
     # path('swagger/', schema_view),
     # path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
