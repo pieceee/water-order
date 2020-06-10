@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from random import randint
 from wsgiref.util import FileWrapper
 
@@ -11,11 +12,19 @@ from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
 from rest_framework.views import APIView
 
-from .models import Order, Product, ProductOrder, Profile
-from .serializers import (AdressSerializer, CartSerializer, OrderSerializer,
-                          OrdersListSerializer, ProductSerializer)
+from .models import Order
+from .models import Product
+from .models import ProductOrder
+from .models import Profile
+from .serializers import AdressSerializer
+from .serializers import CartSerializer
+from .serializers import OrderSerializer
+from .serializers import OrdersListSerializer
+from .serializers import ProductSerializer
 from .smsc_api import *
-from .Utils import ExcelCreator, check_coord, clear_number
+from .Utils import check_coord
+from .Utils import clear_number
+from .Utils import ExcelCreator
 
 
 class OrderViewSchema(AutoSchema):
