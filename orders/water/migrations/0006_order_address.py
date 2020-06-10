@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('water', '0005_auto_20200604_1805'),
+        ("water", "0005_auto_20200604_1805"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='address',
-            field=models.CharField(default='def', max_length=100),
+            model_name="order",
+            name="address",
+            field=models.CharField(default="def", max_length=100),
             preserve_default=False,
         ),
     ]

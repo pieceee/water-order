@@ -15,18 +15,18 @@ class OrdersListSerializer(serializers.Serializer):
     client_id = serializers.CharField()
 
     def __init__(self, data):
-        self.status = data['status']
-        self.client_id = data['client_id']
+        self.status = data["status"]
+        self.client_id = data["client_id"]
 
 
 class CartSerializer(serializers.ModelSerializer):
-    #id = serializers.UUIDField()
-    #count = serializers.IntegerField()
+    # id = serializers.UUIDField()
+    # count = serializers.IntegerField()
     product_id = serializers.CharField()
 
     class Meta:
         model = ProductOrder
-        fields = ('order_id', 'product_id', 'count')
+        fields = ("order_id", "product_id", "count")
 
     # def __init__(self, data):
     #    self.id = data['id']
@@ -38,7 +38,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('user_id', 'place', 'date', 'status', 'products', 'id')
+        fields = ("user_id", "place", "date", "status", "products", "id")
 
 
 class AdressSerializer(serializers.Serializer):
@@ -47,6 +47,6 @@ class AdressSerializer(serializers.Serializer):
     comment = serializers.CharField()
 
     def __init__(self, data):
-        self.coords = data['coords']
-        self.place = data['place']
-        self.comment = data['comment']
+        self.coords = data["coords"]
+        self.place = data["place"]
+        self.comment = data["comment"]
