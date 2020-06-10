@@ -1,24 +1,28 @@
 <template>
-    <info-page :title="pagecontent.title" :content="pagecontent.content" />
+  <info-page :title="pagecontent.title" :content="pagecontent.content" />
 </template>
 
 <script>
-import InfoPage from '~/components/InfoPage.vue'
+  import InfoPage from '~/components/InfoPage.vue'
 
-const mockup = {
+  const mockup = {
     title: "Доставка",
-    content: "..."
-}
+    content: "Доставка осуществляется в день. который вы выбрали." +
+      " За 30 минут до приезда мы предупредим вас, что уже рядом." +
+      " В случае непредвиденных обстоятельств дата доставки может меняться. Доставка осуществляется только в пределах города Воронеж."
 
-export default {
+  }
+
+  export default {
     layout: 'empty',
     components: {
-        InfoPage
+      InfoPage
     },
-    data () {
+    data() {
       return {
         pagecontent: mockup
       }
     },
-}
+  }
+
 </script>

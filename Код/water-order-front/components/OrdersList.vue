@@ -6,7 +6,7 @@
 
     <v-tabs-items v-model="tab" class="overflow-y-auto">
       <v-tab-item v-for="(p,i) in placesorders" :key="i">
-        <orders :orders="p" />
+        <orders :orders="p" :ismanager="ismanager" />
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -19,7 +19,7 @@
     components: {
       Orders
     },
-    props: ['orders'],
+    props: ['orders', 'ismanager'],
     data: () => ({
       tab: 0,
       selected: 0,

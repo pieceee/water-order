@@ -18,15 +18,26 @@
 </template>
 
 <script>
-  const mockup = [{
-    tel: "8999",
-    name: "Ak"
-  }, {
-    tel: "899988",
-    name: "Aks"
-  }]
-
   export default {
+    created: function() {
+      fetch('/api/client/', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.getters.getToken
+          }
+        }).then(
+          successResponse => {
+            if (successResponse.status != 200) {
+              alert("Error")
+            } else {
+              this.searchresult = successResponse.json()
+            }
+          },
+          failResponse => {
+            alert("Error")
+          }
+        )
+    },
     head: {
       title: 'Клиенты'
     },
