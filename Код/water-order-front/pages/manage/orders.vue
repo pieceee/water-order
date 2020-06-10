@@ -1,78 +1,38 @@
 <template>
   <v-container>
 
-    <orders-list :orders="mockup" />
+    <orders-list :orders="mockup" :ismanager="true" />
 
     <v-btn text color="primary" style="position: absolute; bottom: 24px; left: 50%;
         margin-right: -50%;
-        transform: translate(-50%);">Выгрузить</v-btn>
+        transform: translate(-50%);" @click="download">Выгрузить EXCEL</v-btn>
 
   </v-container>
 </template>
 
-<script>
-  const mockup = [{
-      id: 1,
-
-      place: "ул Розовая 15",
-      cart: {
-        sum: 145,
-        items: [{
-          id: 2,
-          description: "Twofgfggdgs",
-          count: 7
-        }]
-      },
-      date: "1.01",
-      status: "Выполнен"
-    },
-    {
-      id: 2,
-      place: "ул Розовая 15",
-      cart: {
-        sum: 1457,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 3
-        }]
-      },
-      date: "5.05",
-      status: "В обработке"
-    },
-    {
-      id: 3,
-
-      place: "ул Розовая 25",
-      cart: {
-        sum: 45,
-        items: [{
-          id: 2,
-          description: "Two",
-          count: 3
-        }]
-      },
-      date: "6.01",
-      status: "В доставке"
-    },
-    {
-      id: 4,
-      place: "ул Розовая 1",
-      cart: {
-        sum: 147,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 2
-        }]
-      },
-      date: "9.05",
-      status: "В обработке"
-    },
-  ]
+<script>  
   import OrdersList from "~/components/OrdersList.vue"
 
   export default {
+    created: function() {
+      fetch('/api/orders/', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.getters.getToken
+          }
+        }).then(
+          successResponse => {
+            if (successResponse.status != 200) {
+              alert("Error")
+            } else {
+              this.mockup = successResponse.json()
+            }
+          },
+          failResponse => {
+            alert("Error")
+          }
+        )
+    },
     head: {
       title: 'Заказы'
     },
@@ -80,7 +40,31 @@
       OrdersList
     },
     layout: 'manage',
-    data: () => ({mockup: mockup})
+    data: () => ({
+      mockup: {}
+    }),
+    methods: {
+      download() {
+        fetch('/api/report/', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer' + this.$store.getters.getToken
+          }
+        }).then(
+          successResponse => {
+            if (successResponse.status != 200) {
+              alert("Error")
+            } else {
+              successResponse.blob()
+            }
+          },
+          failResponse => {
+            alert("Error")
+          }
+        )
+
+      }
+    },
   }
 
 </script>

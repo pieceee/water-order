@@ -15,6 +15,11 @@
           </v-list-item-action>
         </v-list-item>
 
+        <v-list-item>          
+          <v-list-item-title>{{name}}</v-list-item-title>
+          <v-list-item-title>Выйти</v-list-item-title>
+        </v-list-item>
+
         <v-list-item v-for="(item, i) in items" :key="i" :to="item.link" nuxt link>
           <v-list-item-title>{{item.text}}</v-list-item-title>
         </v-list-item>
@@ -51,9 +56,14 @@
     data() {
       return {
         drawer: false,
-        items: links
+        items: links,        
       }
-    }
+    },
+    computed: {      
+      name() {
+        return this.$store.state.personaldata.name
+      }
+    },
   }
 
 </script>

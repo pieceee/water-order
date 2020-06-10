@@ -6,10 +6,10 @@
     </v-tabs>
     <v-tabs-items v-model="tab" class="overflow-y-auto">
       <v-tab-item>
-        <orders :orders="orders" />
+        <orders :orders="orders" :ismanager="false" />
       </v-tab-item>
       <v-tab-item>
-        <orders :orders="pastorders" />
+        <orders :orders="pastorders" :ismanager="false" />
       </v-tab-item>
     </v-tabs-items>
 
@@ -20,68 +20,6 @@
 </template>
 
 <script>
-  const mockup = [{
-      id: 1,
-
-      place: "ул Розовая 5",
-      cart: {
-        sum: 145,
-        items: [{
-          id: 2,
-          description: "Two",
-          count: 7
-        }]
-      },
-      date: "1.01",
-      status: "В доставке"
-    },
-    {
-      id: 1,
-      place: "ул Розовая 15",
-      cart: {
-        sum: 1457,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 3
-        }]
-      },
-      date: "5.05",
-      status: "В обработке"
-    },
-  ]
-
-  const mockup2 = [{
-      id: 1,
-
-      place: "ул Розовая 25",
-      cart: {
-        sum: 45,
-        items: [{
-          id: 2,
-          description: "Two",
-          count: 3
-        }]
-      },
-      date: "6.01",
-      status: "В доставке"
-    },
-    {
-      id: 1,
-      place: "ул Розовая 1",
-      cart: {
-        sum: 147,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 2
-        }]
-      },
-      date: "9.05",
-      status: "В обработке"
-    },
-  ]
-
   import Orders from "~/components/Orders.vue"
 
   export default {
@@ -94,9 +32,35 @@
     layout: 'personal',
     data: () => ({
       tab: null,
-      orders: mockup,
-      pastorders: mockup2,
+      orders: [],
+      pastorders: [],
     }),
+    created: function () {
+
+      const response = await fetch('/api/orders/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer' + this.$store.getters.getToken
+        },
+        body: JSON.stringify({
+          status: "registered",
+          client_id: ""
+        })
+      })
+      this.orders = response.json()
+
+      const res = await fetch('/api/orders/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer' + this.$store.getters.getToken
+        },
+        body: JSON.stringify({
+          status: "past",
+          client_id: ""
+        })
+      })
+      this.pastorders = res.json()
+    }
   }
 
 </script>

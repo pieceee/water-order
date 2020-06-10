@@ -1,61 +1,31 @@
 <template>
-    <v-container>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{clientdata.name}}</v-list-item-title>
-            <v-list-item-subtitle>{{clientdata.tel}}</v-list-item-subtitle>
-          </v-list-item-content>
+  <v-container>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>{{clientdata.name}}</v-list-item-title>
+        <v-list-item-subtitle>{{clientdata.tel}}</v-list-item-subtitle>
+      </v-list-item-content>
 
-          <v-list-item-action>
-            <v-btn text color="primary">Изменить</v-btn>
-          </v-list-item-action>
-        </v-list-item>
+      <v-list-item-action>
+        <v-btn text color="primary">Изменить</v-btn>
+      </v-list-item-action>
+    </v-list-item>
 
-        <v-divider />
+    <v-divider />
 
-        <orders-list :orders="orders" />
-    </v-container>
+    <orders-list :orders="orders" :ismanager="true" />
+  </v-container>
 </template>
 
 <script>
-const m = {name: "Anton", tel: "8877"}
-const mockup = [{
-      id: 1,
-      place: "ул Розовая 15",
-      cart: {
-        sum: 145,
-        items: [{
-          id: 2,
-          description: "Twofgfggdgs",
-          count: 7
-        }]
-      },
-      date: "1.01",
-      status: "Выполнен"
-    },
-    {
-      id: 2,
-      place: "ул Розовая 15",
-      cart: {
-        sum: 1457,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 3
-        }]
-      },
-      date: "5.05",
-      status: "В обработке"
-    },]
+  import OrdersList from "~/components/OrdersList.vue"
 
-import OrdersList from "~/components/OrdersList.vue"
-
-export default {
+  export default {
     head: {
       title: 'Клиент'
     },
     components: {
-        OrdersList
+      OrdersList
     },
     layout: 'manage',
     data: () => ({
@@ -63,8 +33,21 @@ export default {
       orders: null
     }),
     created() {
-        this.clientdata = m
-        this.orders = mockup
+      const res = await fetch('/api/orders/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer' + this.$store.getters.getToken
+        },
+        body: JSON.stringify({
+          status: "",
+          client_id: this.$store.state.selecteduser.id
+        })
+      })
+
+      this.orders = res.json()
+      this.clientdata = this.$store.state.selecteduser
+      this.orders = res.json()
     }
   }
+
 </script>

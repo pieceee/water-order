@@ -46,25 +46,25 @@
 <script>
   const mockup = [{
       id: 1,
-      src: '/1.png',
+      src: '/def.png',
       price: 169.00,
       description: "Vitamin Defence Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «ЗАЩИТА»)"
     },
     {
       id: 2,
-      src: '/1.png',
+      src: '/eve.png',
       price: 178.00,
       description: "Vitamin Every Day Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «КАЖДЫЙ ДЕНЬ»)"
     },
     {
       id: 3,
-      src: '/1.png',
+      src: '/pow.png',
       price: 187,
       description: "Vitamin Power Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «СИЛА»)"
     },
     {
       id: 4,
-      src: '/1.png',
+      src: '/det.png',
       price: 196,
       description: "Vitamin Detox Water (ВИТАМИНИЗИРОВАННАЯ ВОДА «ДЕТОКС»)"
     },
@@ -87,7 +87,12 @@
     },
     methods: {
       addelement() {
-        yaCounter62256409.reachGoal('ADD_TO_CART')
+        try {
+          yaCounter62256409.reachGoal('ADD_TO_CART')
+        } catch (error) {
+          console.error("Unable to laod Yandex Metrika")
+        }
+        
         const element = {
           ...this.items[this.show]
         }

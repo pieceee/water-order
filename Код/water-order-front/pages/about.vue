@@ -1,24 +1,31 @@
 <template>
-    <info-page :title="pagecontent.title" :content="pagecontent.content" />
+  <info-page :title="pagecontent.title" :content="pagecontent.content" />
 </template>
 
 <script>
-import InfoPage from '~/components/InfoPage.vue'
+  import InfoPage from '~/components/InfoPage.vue'
 
-const mockup = {
+  const mockup = {
     title: "О компании",
-    content: "..."
-}
+    content: "Наша компания была создана в 2020 году. Мы - совсем молодая и перспективная команда, которая готова вас радовать каждый день! VitaWater поставляет витаминизированную воду как компаниям, так и частным лицам." +
+      "VitaWater была разработана для поддержания здоровья населения. Мы думаем о вас, поэтому приложили все усилия для того, чтобы заказ воды не вызывал сложности. Выбирая нашу воду, вы обеспечиваете себя необходимым зарядом витаминов на целый день." +
+      "Процент содержания макроэлементов в воде рассчитан таким образом, что дополнить ваш рацион витаминами, но не заменить его полностью." +
+      "  Адрес: Воронеж, Карла Маркса, 21 " +
+      "Телефон: +7-920-555-55-55 " +
+      "E-mail: box@vitawater.ru" +
+      " Режим работы: ежедневно 9:00-18:00"
+  }
 
-export default {
+  export default {
     layout: 'empty',
     components: {
-        InfoPage
+      InfoPage
     },
-    data () {
+    data() {
       return {
         pagecontent: mockup
       }
     },
-}
+  }
+
 </script>

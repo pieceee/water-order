@@ -3,7 +3,7 @@
 
     <v-tabs v-model="tab">
       <v-tab v-for="(p,i) in places" :key="i">{{p}}</v-tab>
-      <v-btn large text>Добавить</v-btn>
+      <v-btn large text to="/personal/mydata">Добавить</v-btn>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
@@ -17,7 +17,25 @@
 
               <v-list-item-action>
                 <v-list-item-title class="display-1">{{cart.sum}}Р</v-list-item-title>
-                <v-btn text>Изменить</v-btn>
+                <v-btn @click="dialog=true" text>Изменить</v-btn>
+                <v-dialog v-model="dialog" max-width="600px">
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">Выбор списка</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <p v-for="(item, k) in cart.items" :key="k">{{item.description}} x {{item.count}}</p>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="dialog = false">Закрыть</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
@@ -25,72 +43,13 @@
       </v-tab-item>
     </v-tabs-items>
 
-    <order-brief :brief="{}" :firstorder="false" />    
+    <order-brief :brief="{}" :firstorder="false" />
+
 
   </v-container>
 </template>
 
 <script>
-  const mockup = [{
-      id: 1,
-
-      place: "ул Розовая 15",
-      cart: {
-        sum: 145,
-        items: [{
-          id: 2,
-          description: "Twofgfggdgs",
-          count: 7
-        }]
-      },
-      date: "1.01",
-      status: "В доставке"
-    },
-    {
-      id: 2,
-      place: "ул Розовая 15",
-      cart: {
-        sum: 1457,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 3
-        }]
-      },
-      date: "5.05",
-      status: "В обработке"
-    },
-    {
-      id: 3,
-
-      place: "ул Розовая 25",
-      cart: {
-        sum: 45,
-        items: [{
-          id: 2,
-          description: "Two",
-          count: 3
-        }]
-      },
-      date: "6.01",
-      status: "В доставке"
-    },
-    {
-      id: 4,
-      place: "ул Розовая 1",
-      cart: {
-        sum: 147,
-        items: [{
-          id: 1,
-          description: "One",
-          count: 2
-        }]
-      },
-      date: "9.05",
-      status: "В обработке"
-    },
-  ]
-
   import OrderBrief from "~/components/OrderBrief.vue"
 
   export default {
@@ -106,18 +65,36 @@
       selected: -1,
       places: [],
       placesorders: [],
+      dialog: false
     }),
     watch: {
       tab: function (n) {
         this.selected = -1
       },
-      selected: function(){
-        yaCounter62256409.reachGoal('SELECTCART')
+      selected: function () {
+        try {
+          yaCounter62256409.reachGoal('SELECTCART')
+        } catch (error) {
+          console.error("Unable to laod Yandex Metrika")
+        }
+
       }
     },
     created: function () {
       const vm = this
-      mockup.forEach(element => {
+
+
+      const response = await fetch('/api/client/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer' + this.$store.getters.getToken
+        },
+        body: JSON.stringify({
+          status: "",
+          client_id: ""
+        })
+      })
+      await res.json().forEach(element => {
         const n = vm.places.indexOf(element.place)
         if (n === -1) {
           vm.places.push(element.place)
