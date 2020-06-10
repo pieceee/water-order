@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # SMSC.RU API (smsc.ru) версия 2.0 (03.07.2019)
-
 import smtplib
 from datetime import datetime
 from time import sleep
