@@ -1,15 +1,10 @@
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
-from .views import (
-    OrderView,
-    NewOrderView,
-    ClientView,
-    AuthSmsView,
-    ConfirmAuthView,
-    ReportView,
-)
-from rest_framework_swagger.views import get_swagger_view
 from rest_framework.documentation import include_docs_urls
+from rest_framework_simplejwt import views as jwt_views
+from rest_framework_swagger.views import get_swagger_view
+
+from .views import (AuthSmsView, ClientView, ConfirmAuthView, NewOrderView,
+                    OrderView, ReportView)
 
 # schema_view = get_swagger_view(title='Pastebin API')
 

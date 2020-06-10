@@ -1,26 +1,21 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import Product, Order, ProductOrder, Profile
-from .serializers import (
-    ProductSerializer,
-    OrdersListSerializer,
-    OrderSerializer,
-    CartSerializer,
-    AdressSerializer,
-)
-from datetime import datetime
-from rest_framework.generics import get_object_or_404
-from random import randint
-from .smsc_api import *
 from datetime import datetime, timedelta
-import jwt
-import xlwt
+from random import randint
 from wsgiref.util import FileWrapper
-from django.http import HttpResponse
-from .Utils import clear_number, check_coord, ExcelCreator
 
 import coreapi
+import jwt
+import xlwt
+from django.http import HttpResponse
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
+from rest_framework.views import APIView
+
+from .models import Order, Product, ProductOrder, Profile
+from .serializers import (AdressSerializer, CartSerializer, OrderSerializer,
+                          OrdersListSerializer, ProductSerializer)
+from .smsc_api import *
+from .Utils import ExcelCreator, check_coord, clear_number
 
 
 class OrderViewSchema(AutoSchema):

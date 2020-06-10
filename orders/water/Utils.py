@@ -1,6 +1,8 @@
 from math import sqrt
-from .models import Product, Order, ProductOrder, Profile
+
 import xlwt
+
+from .models import Order, Product, ProductOrder, Profile
 
 
 def clear_number(number):
