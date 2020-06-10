@@ -14,17 +14,17 @@ except ImportError:
 # Константы для настройки библиотеки
 SMSC_LOGIN = "chalex2000@yandex.ru"  # логин клиента
 SMSC_PASSWORD = "uEa-SyW-Rcd-wG7"  # пароль
-SMSC_POST = False				# использовать метод POST
-SMSC_HTTPS = False				# использовать HTTPS протокол
+SMSC_POST = False  # использовать метод POST
+SMSC_HTTPS = False  # использовать HTTPS протокол
 # кодировка сообщения (windows-1251 или koi8-r), по умолчанию используется utf-8
 SMSC_CHARSET = "utf-8"
-SMSC_DEBUG = False				# флаг отладки
+SMSC_DEBUG = False  # флаг отладки
 
 # Константы для отправки SMS по SMTP
-SMTP_FROM = "api@smsc.ru"		# e-mail адрес отправителя
+SMTP_FROM = "api@smsc.ru"  # e-mail адрес отправителя
 SMTP_SERVER = "send.smsc.ru"  # адрес smtp сервера
-SMTP_LOGIN = ""					# логин для smtp сервера
-SMTP_PASSWORD = ""				# пароль для smtp сервера
+SMTP_LOGIN = ""  # логин для smtp сервера
+SMTP_PASSWORD = ""  # пароль для smtp сервера
 
 # Вспомогательная функция, эмуляция тернарной операции ?:
 
@@ -36,6 +36,7 @@ def ifs(cond, val1, val2):
 
 
 # Класс для взаимодействия с сервером smsc.ru
+
 
 class SMSC(object):
 
@@ -59,30 +60,71 @@ class SMSC(object):
     # возвращает массив (<id>, <количество sms>, <стоимость>, <баланс>) в случае успешной отправки
     # либо массив (<id>, -<код ошибки>) в случае ошибки
 
-    def send_sms(self, phones, message, translit=0, time="", id=0, format=0, sender=False, query=""):
-        formats = ["flash=1", "push=1", "hlr=1", "bin=1", "bin=2",
-                   "ping=1", "mms=1", "mail=1", "call=1", "viber=1", "soc=1"]
+    def send_sms(
+        self,
+        phones,
+        message,
+        translit=0,
+        time="",
+        id=0,
+        format=0,
+        sender=False,
+        query="",
+    ):
+        formats = [
+            "flash=1",
+            "push=1",
+            "hlr=1",
+            "bin=1",
+            "bin=2",
+            "ping=1",
+            "mms=1",
+            "mail=1",
+            "call=1",
+            "viber=1",
+            "soc=1",
+        ]
 
-        m = self._smsc_send_cmd("send", "cost=3&phones=" + quote(phones) + "&mes=" + quote(message) +
-                                "&translit=" + str(translit) + "&id=" + str(id) + ifs(format > 0, "&" + formats[format-1], "") +
-                                ifs(sender == False, "", "&sender=" + quote(str(sender))) +
-                                ifs(time, "&time=" + quote(time), "") + ifs(query, "&" + query, ""))
+        m = self._smsc_send_cmd(
+            "send",
+            "cost=3&phones="
+            + quote(phones)
+            + "&mes="
+            + quote(message)
+            + "&translit="
+            + str(translit)
+            + "&id="
+            + str(id)
+            + ifs(format > 0, "&" + formats[format - 1], "")
+            + ifs(sender == False, "", "&sender=" + quote(str(sender)))
+            + ifs(time, "&time=" + quote(time), "")
+            + ifs(query, "&" + query, ""),
+        )
 
         # (id, cnt, cost, balance) или (id, -error)
 
         if SMSC_DEBUG:
             if m[1] > "0":
-                print("Сообщение отправлено успешно. ID: " +
-                      m[0] + ", всего SMS: " + m[1] + ", стоимость: " + m[2] + ", баланс: " + m[3])
+                print(
+                    "Сообщение отправлено успешно. ID: "
+                    + m[0]
+                    + ", всего SMS: "
+                    + m[1]
+                    + ", стоимость: "
+                    + m[2]
+                    + ", баланс: "
+                    + m[3]
+                )
             else:
-                print("Ошибка №" + m[1][1:] +
-                      ifs(m[0] > "0", ", ID: " + m[0], ""))
+                print("Ошибка №" + m[1][1:] + ifs(m[0] > "0", ", ID: " + m[0], ""))
 
         return m
 
     # SMTP версия метода отправки SMS
 
-    def send_sms_mail(self, phones, message, translit=0, time="", id=0, format=0, sender=""):
+    def send_sms_mail(
+        self, phones, message, translit=0, time="", id=0, format=0, sender=""
+    ):
         server = smtplib.SMTP(SMTP_SERVER)
 
         if SMSC_DEBUG:
@@ -91,9 +133,30 @@ class SMSC(object):
         if SMTP_LOGIN:
             server.login(SMTP_LOGIN, SMTP_PASSWORD)
 
-        server.sendmail(SMTP_FROM, "send@send.smsc.ru", "Content-Type: text/plain; charset=" + SMSC_CHARSET + "\n\n" +
-                        SMSC_LOGIN + ":" + SMSC_PASSWORD + ":" + str(id) + ":" + time + ":" + str(translit) + "," +
-                        str(format) + "," + sender + ":" + phones + ":" + message)
+        server.sendmail(
+            SMTP_FROM,
+            "send@send.smsc.ru",
+            "Content-Type: text/plain; charset="
+            + SMSC_CHARSET
+            + "\n\n"
+            + SMSC_LOGIN
+            + ":"
+            + SMSC_PASSWORD
+            + ":"
+            + str(id)
+            + ":"
+            + time
+            + ":"
+            + str(translit)
+            + ","
+            + str(format)
+            + ","
+            + sender
+            + ":"
+            + phones
+            + ":"
+            + message,
+        )
         server.quit()
 
     # Метод получения стоимости SMS
@@ -112,13 +175,35 @@ class SMSC(object):
     #
     # возвращает массив (<стоимость>, <количество sms>) либо массив (0, -<код ошибки>) в случае ошибки
 
-    def get_sms_cost(self, phones, message, translit=0, format=0, sender=False, query=""):
-        formats = ["flash=1", "push=1", "hlr=1", "bin=1", "bin=2",
-                   "ping=1", "mms=1", "mail=1", "call=1", "viber=1", "soc=1"]
+    def get_sms_cost(
+        self, phones, message, translit=0, format=0, sender=False, query=""
+    ):
+        formats = [
+            "flash=1",
+            "push=1",
+            "hlr=1",
+            "bin=1",
+            "bin=2",
+            "ping=1",
+            "mms=1",
+            "mail=1",
+            "call=1",
+            "viber=1",
+            "soc=1",
+        ]
 
-        m = self._smsc_send_cmd("send", "cost=1&phones=" + quote(phones) + "&mes=" + quote(message) +
-                                ifs(sender == False, "", "&sender=" + quote(str(sender))) +
-                                "&translit=" + str(translit) + ifs(format > 0, "&" + formats[format-1], "") + ifs(query, "&" + query, ""))
+        m = self._smsc_send_cmd(
+            "send",
+            "cost=1&phones="
+            + quote(phones)
+            + "&mes="
+            + quote(message)
+            + ifs(sender == False, "", "&sender=" + quote(str(sender)))
+            + "&translit="
+            + str(translit)
+            + ifs(format > 0, "&" + formats[format - 1], "")
+            + ifs(query, "&" + query, ""),
+        )
 
         # (cost, cnt) или (0, -error)
 
@@ -148,7 +233,8 @@ class SMSC(object):
 
     def get_status(self, id, phone, all=0):
         m = self._smsc_send_cmd(
-            "status", "phone=" + quote(phone) + "&id=" + str(id) + "&all=" + str(all))
+            "status", "phone=" + quote(phone) + "&id=" + str(id) + "&all=" + str(all)
+        )
 
         # (status, time, err, ...) или (0, -error)
 
@@ -157,8 +243,11 @@ class SMSC(object):
                 tm = ""
                 if m[1] > "0":
                     tm = str(datetime.fromtimestamp(int(m[1])))
-                print("Статус SMS = " + m[0] + ifs(m[1] > "0",
-                                                   ", время изменения статуса - " + tm, ""))
+                print(
+                    "Статус SMS = "
+                    + m[0]
+                    + ifs(m[1] > "0", ", время изменения статуса - " + tm, "")
+                )
             else:
                 print("Ошибка №" + m[1][1:])
 
@@ -189,11 +278,18 @@ class SMSC(object):
     # Метод вызова запроса. Формирует URL и делает 3 попытки чтения
 
     def _smsc_send_cmd(self, cmd, arg=""):
-        url = ifs(SMSC_HTTPS, "https", "http") + \
-            "://smsc.ru/sys/" + cmd + ".php"
+        url = ifs(SMSC_HTTPS, "https", "http") + "://smsc.ru/sys/" + cmd + ".php"
         _url = url
-        arg = "login=" + quote(SMSC_LOGIN) + "&psw=" + quote(SMSC_PASSWORD) + \
-            "&fmt=1&charset=" + SMSC_CHARSET + "&" + arg
+        arg = (
+            "login="
+            + quote(SMSC_LOGIN)
+            + "&psw="
+            + quote(SMSC_PASSWORD)
+            + "&fmt=1&charset="
+            + SMSC_CHARSET
+            + "&"
+            + arg
+        )
 
         i = 0
         ret = ""
