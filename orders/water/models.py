@@ -25,6 +25,11 @@ class Profile(models.Model):
     name = models.CharField(max_length=50)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
 
+    def __str__(self):
+        return "{} {} {}".format(self.name, self.phone, self.role)
+
+
+
 
 class Order(models.Model):
     STATUS_CHOICES = (
@@ -38,9 +43,10 @@ class Order(models.Model):
     address = models.CharField(max_length=100)
     date = models.DateTimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='')
+    comment = models.CharField(max_length=500)
 
     def __str__(self):
-        return self.user.first_name + str(self.date)
+        return self.user.name + str(self.date)
 
 
 class ProductOrder(models.Model):
@@ -49,7 +55,7 @@ class ProductOrder(models.Model):
     count = models.IntegerField()
 
     def __str__(self):
-        return "{} {} {}".format(self.product_id, self.order_id, self.count)
+        return "product {}, order {}, count {}".format(self.product_id, self.order_id, self.count)
 
 
 

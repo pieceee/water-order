@@ -11,6 +11,7 @@ import jwt
 import xlwt
 from wsgiref.util import FileWrapper
 from django.http import HttpResponse
+from .Utils import clear_number, check_coord, ExcelCreator
 
 import coreapi
 from rest_framework.schemas import AutoSchema
@@ -18,12 +19,12 @@ from rest_framework.schemas import AutoSchema
 class OrderViewSchema(AutoSchema):
     def get_manual_fields(self, path, method):
         extra_fields = []
-        if method.lower() in ['post', 'put', 'get']:
+        if method.lower() in ['post', 'put']:
             extra_fields = [
                 # coreapi.Field('desc', required=True,
                 #               location="body",
                 #               type="string"),
-                coreapi.Field('access_token')
+                coreapi.Field('body', location='body')
             ]
         manual_fields = super().get_manual_fields(path, method)
         return manual_fields + extra_fields
@@ -39,13 +40,10 @@ class AuthSmsView(APIView):
         """ Отправка смс
             Пример  {'phone': '+79009317249', 'name': 'Alexander'}
             Поле name опциональное, требуется, если номер не зарегистрирован в системе"""
-        print('header', request.META)
-        number = request.data.get('phone')
+        number = clear_number(request.data.get('phone'))
         name = request.data.get('name')
-        print(request.data)
         if not number:
             return Response({"Error": "field 'phone' don't exist in request"}, status="400")
-        print(request.data)
         try:
             profile = Profile.objects.get(phone=number)
         except:
@@ -57,7 +55,6 @@ class AuthSmsView(APIView):
         if profile:
             code = randint(1000, 9999)
             smsc = SMSC()
-            #number = ''#"'79205575179' # get number from request = phone
             message = "Код подтверждения {}".format(code)
             if float(smsc.get_sms_cost(number, message)[0]) > 3:
                 print('high cost sms to number {}'.format(number))
@@ -81,8 +78,11 @@ class ConfirmAuthView(APIView):
          Пример { "phone": "+79009317249", "code": "7996"}
          """
         #print(request.data)
-        phone = request.data.get('phone')
-        users_code = request.data.get('code')
+        try:
+            phone = clear_number(request.data.get('phone'))
+            users_code = request.data.get('code')
+        except:
+            return Response({"Error": "invalid_number"}, status="400")
         if not phone or not users_code:
             return Response({"Error": "field 'phone' or 'code' don't exist in request"}, status="400")
         my_code = request.session.get('code', None)
@@ -102,8 +102,8 @@ class OrderView(APIView):
     def post(self, request):
         """ Возвращает список заказов
         Поля status и client_id могут быть пустыми
-        Пример: { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkI....",
-  "status": "",
+        Пример: {
+  "status": "confirmed",
   "client_id": ""
 }"""
         # acc_tok = request.data.get('access_token')
@@ -112,7 +112,7 @@ class OrderView(APIView):
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
-        #if User.objects.get(id=payload['user_id']).profile.role == 'customer':
+        # if User.objects.get(id=payload['user_id']).profile.role == 'customer':
         status = request.data.get('status')
         client_id = request.data.get('client_id')
         if status and client_id:
@@ -129,20 +129,21 @@ class OrderView(APIView):
     def put(self, request):
         """
 Изменяет статус заказа
-Пример { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1....",
+Пример {
   "status": "confirmed",
-            "id": 6
+            "id": 30
 }
     """
-        #acc_tok = request.data.get('access_token')
+        # acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
-        order_id = request.data.get('id')
-        saved_order = Order.objects.get(pk=order_id)
-        if not saved_order:
+        try:
+            order_id = request.data.get('id')
+            saved_order = Order.objects.get(pk=order_id)
+        except:
             return Response({"Error": "order not exist"}, status=400)
         new_status = request.data.get('status')
         saved_order.status = new_status
@@ -152,49 +153,51 @@ class OrderView(APIView):
 
 
 class NewOrderView(APIView):
-    """
-    Создание заказа
-    Пример { "access_token": "AiOjE1OTEzODAzNDJ9.zY2YGUa7JGCznndb47tFwHlD4L_UausPnN-D-hlODXs.....",
-  "cart": [
-                {
-                    "product_id": "1",
-                    "count": 2
-                },
-                {
-                    "product_id": "1",
-                    "count": 5
-                }
-            ],
-   "address": { "coords": "23.44 55.66", "place": "revolycii 65", "comment": "lalala"}
-}
-    """
     schema = OrderViewSchema()
     def post(self, request):
-        #acc_tok = request.data.get('access_token')
+        """
+           Создание заказа
+           Пример {
+"cart": [
+{
+"product_id": "1",
+"count": 2
+},
+{
+"product_id": "2",
+"count": 5
+}
+],
+"address": { "coords": "51.64 39.26", "place": "revolycii 65", "comment": "lalala"}
+}
+           """
+        acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
-
         carts = request.data.get('cart')
         address = request.data.get('address')
-
         carts_serializer = CartSerializer(data=carts, many=True)
         address_serializer = AdressSerializer(data=address)
-
+        if carts_serializer.is_valid():
+            if len(carts_serializer.data) == 0:
+                return Response({'Error': '0 products in order'}, status=400)
+        n, e = map(float, address_serializer.coords.split())
+        if not check_coord(n,e):
+            return Response({'Error': 'coordinates out of Voronezh'}, status=400)
         order = Order()
         order.user = Profile.objects.get(id=payload['user_id'])
+        # order.user = Profile.objects.get(id=1)
         order.status = 'registered'
         order.date = datetime.now()
         order.place = address_serializer.coords
         order.address = address_serializer.place
+        order.comment = address_serializer.comment
         order.save()
-        #print('carts_serializer: ', carts_serializer)
         if carts_serializer.is_valid():
-            #print('valid')
             for cs in carts_serializer.data:
-                #print('cs: ',  cs)
                 po = ProductOrder()
                 po.order = order
                 po.product = Product.objects.get(id=cs['product_id'])
@@ -208,8 +211,8 @@ class ClientView(APIView):
     def get(self, request):
         """
          Возвращает информацию о клиенте по его токену
-         Пример { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1...."
-}
+         Отправляется пустой запрос
+         Пример {}
         """
         # acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
@@ -218,24 +221,28 @@ class ClientView(APIView):
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])
+        # client = Profile.objects.get(id=1)
         answer = {'phone': client.phone, 'name': client.name}
         return Response({"Client": answer}, status=200)
 
     def put(self, request):
         """Изменяет информацию о клиенте
-        Пример {"access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE1OTEzODA2MjZ9...",
+        Пример {
  "phone": "+79009317249",
  "name": "Alexander"
 }"""
-        acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
             payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])
-        new_phone = request.data.get('phone')
-        new_name = request.data.get('name')
+        # client = Profile.objects.get(id=1)
+        try:
+            new_phone = clear_number(request.data.get('phone'))
+            new_name = request.data.get('name')
+        except:
+            return Response({'Error': 'invalid number'}, status=400)
         client.phone = new_phone
         client.name = new_name
         client.save()
@@ -246,9 +253,7 @@ class ReportView(APIView):
     schema = OrderViewSchema()
     def get(self, request):
         """
-         Возвращает файл excel..
-         Пример { "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1...."
-}
+         Возвращает файл excel со всеми заказами
         """
         acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
@@ -257,26 +262,11 @@ class ReportView(APIView):
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])
-        if client.role != 'manager'  :
+        if client.role != 'manager':
             return Response({'Error': 'Customer has not acccess'}, status=400)
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet('Заказы')
-
-        ws.write(0, 0, "Имя заказчика")
-        ws.write(0, 1, "Телефон")
-        ws.write(0, 2, "Дата заказа")
-        ws.write(0, 3, "Место")
-        ws.write(0, 4, "Статус")
-        i = 1
-        for order in Order.objects.all():
-            ws.write(i, 0, order.user.name)
-            ws.write(i, 1, order.user.phone)
-            ws.write(i, 2, str(order.date))
-            ws.write(i, 3, order.address)
-            ws.write(i, 4, order.status)
-            i += 1
-        wb.save('order.xls')
-        f = open('order.xls', 'rb')
+        excel = ExcelCreator()
+        file_name = excel.get_table(orders=Order.objects.all())
+        f = open(file_name, 'rb')
         response = HttpResponse(FileWrapper(f), content_type='application/xls')
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'orders.xls'
         return response

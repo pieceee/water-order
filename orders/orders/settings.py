@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'rest_framework_swagger',
+    'rest_framework',
     'water',
 ]
 
@@ -163,8 +163,8 @@ SWAGGER_SETTINGS = {
     },
     'USE_SESSION_AUTH': True,
     'JSON_EDITOR': True,
-    'REFETCH_SCHEMA_ON_LOGOUT': True
-
+    'REFETCH_SCHEMA_ON_LOGOUT': True,
+    'SHOW_REQUEST_HEADERS': True,
 }
 
 # also edit {load staticfiles} to {load static} in orders/lib/python3.6/site-packages/rest_framework_swagger/templates/rest_framework_swagger/index.html
