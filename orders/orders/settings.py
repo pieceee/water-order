@@ -14,7 +14,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -25,7 +24,6 @@ SECRET_KEY = "%mkhn0=1^_u)d$j1v@me@i=y=j@l=mwyg$x_nqjkq4whkxtm96"
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -84,7 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "orders.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -95,19 +92,27 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME":
+        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME":
+        "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -122,13 +127,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = "/static/"
 
-REST_FRAMEWORK = {"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema"}
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema"
+}
 
 # AutoSchemaSWAGGER_SETTINGS = {
 #     'SECURITY_DEFINITIONS': {
@@ -139,20 +145,31 @@ REST_FRAMEWORK = {"DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSc
 # }
 
 SWAGGER_SETTINGS = {
-    "exclude_namespaces": ["rest_logout",],  # List URL namespaces to ignore
-    "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
+    "exclude_namespaces": [
+        "rest_logout",
+    ],  # List URL namespaces to ignore
+    "SUPPORTED_SUBMIT_METHODS":
+    [  # Specify which methods to enable in Swagger UI
         "get",
         "post",
         "put",
         "delete",
     ],
     "SECURITY_DEFINITIONS": {
-        "api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}
+        "api_key": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization"
+        }
     },
-    "USE_SESSION_AUTH": True,
-    "JSON_EDITOR": True,
-    "REFETCH_SCHEMA_ON_LOGOUT": True,
-    "SHOW_REQUEST_HEADERS": True,
+    "USE_SESSION_AUTH":
+    True,
+    "JSON_EDITOR":
+    True,
+    "REFETCH_SCHEMA_ON_LOGOUT":
+    True,
+    "SHOW_REQUEST_HEADERS":
+    True,
 }
 
 # also edit {load staticfiles} to {load static} in orders/lib/python3.6/site-packages/rest_framework_swagger/templates/rest_framework_swagger/index.html
