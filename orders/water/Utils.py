@@ -1,21 +1,29 @@
 from math import sqrt
-from .models import Product, Order, ProductOrder, Profile
+
 import xlwt
+
+from .models import Order
+from .models import Product
+from .models import ProductOrder
+from .models import Profile
 
 
 def clear_number(number):
-    if 10<=len(number)<=12:
-        return '+7'+number[-10:]
+    if 10 <= len(number) <= 12:
+        return "+7" + number[-10:]
     else:
         raise Exception("number invalid")
 
+
 def check_coord(n, e):
-    return is_in(n,e)
+    return is_in(n, e)
+
 
 def is_in(n, e):
     N, E = 51.6, 39.2
     delta = 0.3
-    return sqrt(abs(N-n)*abs(N-n) + abs(E-e)*abs(E-e)) < 0.3
+    return sqrt(abs(N - n) * abs(N - n) + abs(E - e) * abs(E - e)) < 0.3
+
 
 class ExcelCreator:
     def _init_(self):
@@ -23,11 +31,11 @@ class ExcelCreator:
 
     def get_table(self, orders):
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('Заказы')
+        ws = wb.add_sheet("Заказы")
 
         ws.write(0, 0, "Имя заказчика")
         ws.write(0, 1, "Телефон")
-        ws.write(0, 2, "Товары" )
+        ws.write(0, 2, "Товары")
         ws.write(0, 3, "Дата заказа")
         ws.write(0, 4, "Место")
         ws.write(0, 5, "Статус")
@@ -42,12 +50,12 @@ class ExcelCreator:
             ws.write(i, 5, order.status)
             ws.write(i, 6, order.comment)
             i += 1
-        wb.save('orders.xls')
-        return 'orders.xls'
+        wb.save("orders.xls")
+        return "orders.xls"
 
     def build_products_line(self, order):
         product_orders = ProductOrder.objects.filter(order_id=order.pk)
-        line = ''
+        line = ""
         for po in product_orders:
-            line += po.product.name + ' - ' + str(po.count) + ' штук'
+            line += po.product.name + " - " + str(po.count) + " штук"
         return line
