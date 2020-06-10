@@ -59,19 +59,18 @@ ROOT_URLCONF = 'orders.urls'
 #         'rest_framework_simplejwt.authentication.JWTAuthentication',
 #     ],
 # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
-    # Parser classes priority-wise for Swagger
-    # 'DEFAULT_PARSER_CLASSES': [
-    #     'rest_framework.parsers.FormParser',
-    #     'rest_framework.parsers.MultiPartParser',
-    #     'rest_framework.parsers.JSONParser',
-    # ],
+# Parser classes priority-wise for Swagger
+# 'DEFAULT_PARSER_CLASSES': [
+#     'rest_framework.parsers.FormParser',
+#     'rest_framework.parsers.MultiPartParser',
+#     'rest_framework.parsers.JSONParser',
+# ],
 # }
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,7 +135,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'}
 
 # AutoSchemaSWAGGER_SETTINGS = {
 #     'SECURITY_DEFINITIONS': {

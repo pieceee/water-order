@@ -16,6 +16,7 @@ from .Utils import clear_number, check_coord, ExcelCreator
 import coreapi
 from rest_framework.schemas import AutoSchema
 
+
 class OrderViewSchema(AutoSchema):
     def get_manual_fields(self, path, method):
         extra_fields = []
@@ -29,6 +30,7 @@ class OrderViewSchema(AutoSchema):
         manual_fields = super().get_manual_fields(path, method)
         return manual_fields + extra_fields
 
+
 JWT_SECRET = 'secret'
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_MINUTES = 180
@@ -36,6 +38,7 @@ JWT_EXP_DELTA_MINUTES = 180
 
 class AuthSmsView(APIView):
     schema = OrderViewSchema()
+
     def post(self, request):
         """ Отправка смс
             Пример  {'phone': '+79009317249', 'name': 'Alexander'}
@@ -47,7 +50,7 @@ class AuthSmsView(APIView):
         try:
             profile = Profile.objects.get(phone=number)
         except:
-            #return Response({"Error": "number not found"}, status="400")
+            # return Response({"Error": "number not found"}, status="400")
             profile = Profile()
             profile.name = name
             profile.phone = number
@@ -71,13 +74,15 @@ class AuthSmsView(APIView):
                     print('error code {}'.format(error))
                     return Response({"Error": "send message error"}, status="400")
 
+
 class ConfirmAuthView(APIView):
     schema = OrderViewSchema()
+
     def post(self, request):
         """Возврващает токен и роль пользователя
          Пример { "phone": "+79009317249", "code": "7996"}
          """
-        #print(request.data)
+        # print(request.data)
         try:
             phone = clear_number(request.data.get('phone'))
             users_code = request.data.get('code')
@@ -99,6 +104,7 @@ class ConfirmAuthView(APIView):
 
 class OrderView(APIView):
     schema = OrderViewSchema()
+
     def post(self, request):
         """ Возвращает список заказов
         Поля status и client_id могут быть пустыми
@@ -109,7 +115,8 @@ class OrderView(APIView):
         # acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         # if User.objects.get(id=payload['user_id']).profile.role == 'customer':
@@ -137,7 +144,8 @@ class OrderView(APIView):
         # acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         try:
@@ -154,6 +162,7 @@ class OrderView(APIView):
 
 class NewOrderView(APIView):
     schema = OrderViewSchema()
+
     def post(self, request):
         """
            Создание заказа
@@ -174,7 +183,8 @@ class NewOrderView(APIView):
         acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         carts = request.data.get('cart')
@@ -185,7 +195,7 @@ class NewOrderView(APIView):
             if len(carts_serializer.data) == 0:
                 return Response({'Error': '0 products in order'}, status=400)
         n, e = map(float, address_serializer.coords.split())
-        if not check_coord(n,e):
+        if not check_coord(n, e):
             return Response({'Error': 'coordinates out of Voronezh'}, status=400)
         order = Order()
         order.user = Profile.objects.get(id=payload['user_id'])
@@ -208,6 +218,7 @@ class NewOrderView(APIView):
 
 class ClientView(APIView):
     schema = OrderViewSchema()
+
     def get(self, request):
         """
          Возвращает информацию о клиенте по его токену
@@ -217,7 +228,8 @@ class ClientView(APIView):
         # acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])
@@ -233,7 +245,8 @@ class ClientView(APIView):
 }"""
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])
@@ -251,6 +264,7 @@ class ClientView(APIView):
 
 class ReportView(APIView):
     schema = OrderViewSchema()
+
     def get(self, request):
         """
          Возвращает файл excel со всеми заказами
@@ -258,7 +272,8 @@ class ReportView(APIView):
         acc_tok = request.data.get('access_token')
         acc_tok = request.headers.get('authorization', None)
         try:
-            payload = jwt.decode(acc_tok, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(acc_tok, JWT_SECRET,
+                                 algorithms=[JWT_ALGORITHM])
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             return Response({'Error': 'Token is invalid'}, status=400)
         client = Profile.objects.get(id=payload['user_id'])

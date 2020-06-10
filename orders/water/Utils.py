@@ -4,18 +4,21 @@ import xlwt
 
 
 def clear_number(number):
-    if 10<=len(number)<=12:
+    if 10 <= len(number) <= 12:
         return '+7'+number[-10:]
     else:
         raise Exception("number invalid")
 
+
 def check_coord(n, e):
-    return is_in(n,e)
+    return is_in(n, e)
+
 
 def is_in(n, e):
     N, E = 51.6, 39.2
     delta = 0.3
     return sqrt(abs(N-n)*abs(N-n) + abs(E-e)*abs(E-e)) < 0.3
+
 
 class ExcelCreator:
     def _init_(self):
@@ -27,7 +30,7 @@ class ExcelCreator:
 
         ws.write(0, 0, "Имя заказчика")
         ws.write(0, 1, "Телефон")
-        ws.write(0, 2, "Товары" )
+        ws.write(0, 2, "Товары")
         ws.write(0, 3, "Дата заказа")
         ws.write(0, 4, "Место")
         ws.write(0, 5, "Статус")

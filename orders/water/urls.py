@@ -5,9 +5,9 @@ from rest_framework_swagger.views import get_swagger_view
 from rest_framework.documentation import include_docs_urls
 #schema_view = get_swagger_view(title='Pastebin API')
 
-#urlpatterns = [
+# urlpatterns = [
 #    url(r'^$', schema_view)
-#]
+# ]
 
 schema_view = get_swagger_view(title="Swagger Docs")
 
