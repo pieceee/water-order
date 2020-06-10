@@ -3,12 +3,8 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework_simplejwt import views as jwt_views
 from rest_framework_swagger.views import get_swagger_view
 
-from .views import AuthSmsView
-from .views import ClientView
-from .views import ConfirmAuthView
-from .views import NewOrderView
-from .views import OrderView
-from .views import ReportView
+from .views import (AuthSmsView, ClientView, ConfirmAuthView, NewOrderView,
+                    OrderView, ReportView)
 
 # schema_view = get_swagger_view(title='Pastebin API')
 
